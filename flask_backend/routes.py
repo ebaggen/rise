@@ -3,6 +3,7 @@ from .forms import AlarmEditForm
 from flask import render_template, redirect, request
 from flask import current_app as app
 from flask_backend import db
+from datetime import datetime
 
 
 @app.route('/')
@@ -14,21 +15,20 @@ def index():
 @app.route('/new_alarm', methods=['GET', 'POST'])
 def new_alarm():
     form = AlarmEditForm()
-    if form.validate_on_submit():
+    if form.is_submitted():
         alarm = Alarm(
             time=form.time.data,
             label=form.label.data,
             enabled=form.enabled.data,
             repeat=form.repeat.data,
-            repeat_sunday=form.sunday_repeat.data,
-            repeat_monday=form.monday_repeat.data,
-            repeat_tuesday=form.tuesday_repeat.data,
-            repeat_wednesday=form.wednesday_repeat.data,
-            repeat_thursday=form.thursday_repeat.data,
-            repeat_friday=form.friday_repeat.data,
-            repeat_saturday=form.saturday_repeat.data,
+            repeat_sunday= False, # form.sunday_repeat.data,
+            repeat_monday= False, # form.monday_repeat.data,
+            repeat_tuesday=False, # form.tuesday_repeat.data,
+            repeat_wednesday=False, # form.wednesday_repeat.data,
+            repeat_thursday=False, # form.thursday_repeat.data,
+            repeat_friday=False, # form.friday_repeat.data,
+            repeat_saturday=False # form.saturday_repeat.data,
         )
-
         db.session.add(alarm)
         db.session.commit()
         return redirect('/')

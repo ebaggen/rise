@@ -170,36 +170,33 @@ if __name__ == '__main__':
         try:
             current_date = datetime.now().replace(microsecond=0)
 
-            # Query all enabled alarms
-            alarms = session.query(Alarm) \
-                .filter(Alarm.enabled) \
-                .all()
+            # Query all alarms
+            alarms = session.query(Alarm).all()
+            print(alarms)
 
             # Select and sort all alarms within the next 24 hours
             upcoming_alarms = alarms_to_datetimes(alarms, current_date)
 
             next_alarm = upcoming_alarms[0] if len(upcoming_alarms) > 0 else None
 
-            print('next alarm at: {}'.format(next_alarm))
+            if next_alarm is not None:
 
-            if next_alarm is None:
-                pass
-
-            # Seconds remaining until next alarm
-            time_until_next_alarm = (next_alarm - current_date).total_seconds()
+                # Seconds remaining until next alarm
+                time_until_next_alarm = (next_alarm - current_date).total_seconds()
 
 
-            # Kick off controllers!
-            if time_until_next_alarm <= 10 and not controllers_active:
-                controllers_active = True
-                print('starting controllers!')
-                sonos.start()
-                hue.start()
-            elif not controllers_active:
-                print('Time until next alarm: {0} seconds.'.format(time_until_next_alarm))
+                # Kick off controllers!
+                if time_until_next_alarm <= 10 and not controllers_active:
+                    controllers_active = True
+                    print('starting controllers!')
+                    sonos.start()
+                    hue.start()
+                elif not controllers_active:
+                    print('Time until next alarm: {0} seconds.'.format(time_until_next_alarm))
 
             sleep(1)
 
         except KeyboardInterrupt:
             sonos.stop()
             hue.stop()
+            quit()

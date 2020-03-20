@@ -2,9 +2,37 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {%  block app_content %}
-    <div class="row">
-        <div class="col-md-4">
-            {{  wtf.quick_form(form) }}
-        </div>
-    </div>
+
+<h2>New Alarm</h2>
+<form method="POST" action='/new_alarm'>
+    <p>
+        {{ form.time.label }} <br>
+        {{ form.time }}
+    </p>
+    <p>
+        {{ form.label.label }} <br>
+        {{ form.label }}
+    </p>
+    <p>
+        {{ form.enabled.label }} <br>
+        {{ form.enabled }}
+    </p>
+    <p id="repeat">
+        {{ form.repeat.label }} <br>
+        {{ form.repeat }}
+    </p>
+    <p id="days">
+        {{ form.sunday_repeat.label }} {{ form.sunday_repeat }} <br>
+        {{ form.monday_repeat.label }} {{ form.monday_repeat }} <br>
+        {{ form.tuesday_repeat.label }} {{ form.tuesday_repeat }} <br>
+        {{ form.wednesday_repeat.label }} {{ form.wednesday_repeat }} <br>
+        {{ form.thursday_repeat.label }} {{ form.thursday_repeat }} <br>
+        {{ form.friday_repeat.label }} {{ form.friday_repeat }} <br>
+        {{ form.saturday_repeat.label }} {{ form.saturday_repeat }}
+    </p>
+    <p>
+        {{ form.submit }}
+    </p>
+</form>
+
 {%  endblock %}
