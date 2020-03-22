@@ -1,9 +1,11 @@
 from db.models import Alarm
+from db.schemas import AlarmSchema
 from .forms import AlarmEditForm
 from flask import render_template, redirect, request
 from flask import current_app as app
-from flask_backend import db
+from flask_backend import db, alarm_schema
 from time import time
+
 
 @app.route('/')
 def index():
@@ -45,3 +47,9 @@ def delete_alarm():
 @app.route('/api')
 def api():
     return {'time': time()}
+
+
+@app.route('/api/alarms')
+def get_alarms():
+    alarms = db.session.query(Alarm).order_by(Alarm.time.asc()).all()
+    return {'alarms': alarm_schema.dump(alarms, many=True)}

@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Time
 from db import Base
 
-
 class Alarm(Base):
     __tablename__ = 'alarms'
 
@@ -22,3 +21,7 @@ class Alarm(Base):
     def __repr__(self):
         return '<Alarm @ {0} ({1})>'.format(self.time, self.label)
 
+    def as_dict(self):
+        return {
+            'id'
+        }

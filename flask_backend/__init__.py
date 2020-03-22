@@ -4,9 +4,12 @@ from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
+from db.schemas import AlarmSchema
+
 migrate = Migrate()
 bootstrap = Bootstrap()
 db = SQLAlchemy()
+alarm_schema = AlarmSchema()
 
 
 def create_app(config=Config):
