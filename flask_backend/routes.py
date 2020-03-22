@@ -3,8 +3,7 @@ from .forms import AlarmEditForm
 from flask import render_template, redirect, request
 from flask import current_app as app
 from flask_backend import db
-from datetime import datetime
-
+from time import time
 
 @app.route('/')
 def index():
@@ -41,3 +40,8 @@ def delete_alarm():
     alarm_to_delete = Alarm.query.get(id)
     db.session.delete(alarm_to_delete)
     db.session.commit()
+
+
+@app.route('/api')
+def api():
+    return {'time': time()}
