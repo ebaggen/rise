@@ -39,7 +39,7 @@ def new_alarm():
 
 @app.route('/api/alarms', methods=['GET'])
 def get_alarms():
-    alarms = db.session.query(Alarm).order_by(Alarm.time.asc()).all()
+    alarms = db.session.query(Alarm).all()
     return {'alarms': AlarmSchema().dump(alarms, many=True)}
 
 

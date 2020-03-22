@@ -4,7 +4,8 @@ import AlarmCard from './components/AlarmCard';
 import AlarmModal from './components/AlarmModal';
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add';
-import Alarm from './types/alarm'
+import { fetchAlarms } from './api/alarm'
+import Alarm from "./types/alarm";
 
 
 
@@ -17,24 +18,29 @@ function App() {
     });
 
     useEffect(() => {
-        fetch('/api/alarms')
-            .then(res => res.json())
-            .then(data => {
-                setAlarms(data.alarms);
-        });
+        refreshState();
     }, []);
+
+    const refreshState = () => {
+        fetchAlarms()
+            .then(alarms => {
+                alarms.sort((a: Alarm, b: Alarm) => a.time < b.time ? -1 : 1);
+                setAlarms(alarms);
+            });
+    }
 
     return (
         <div className="App">
             <body className="App-body">
                 <AlarmModal
-                    initialAlarm={showModal.alarm}
+                    alarm={showModal.alarm}
                     showModal={showModal.show}
                     close={() => {
                         setShowModal({
                             alarm: null,
                             show: false
-                        })
+                        });
+                        refreshState();
                     }}
                 />
                 <p>
