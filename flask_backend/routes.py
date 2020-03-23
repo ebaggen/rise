@@ -3,57 +3,26 @@ from db.schemas import AlarmSchema
 from .forms import AlarmEditForm
 from flask import render_template, redirect, request
 from flask import current_app as app
-from flask_backend import db
+from flask_backend import session
 from time import time
 from marshmallow import ValidationError
-
-
-@app.route('/')
-def index():
-    alarms = db.session.query(Alarm).order_by(Alarm.time.asc()).all()
-    return render_template('index.html', alarms=alarms, form=AlarmEditForm())
-
-
-@app.route('/new_alarm', methods=['GET', 'POST'])
-def new_alarm():
-    form = AlarmEditForm()
-    if form.is_submitted():
-        alarm = Alarm(
-            time=form.time.data,
-            label=form.label.data,
-            enabled=form.enabled.data,
-            repeat=form.repeat.data,
-            repeat_sunday= False, # form.sunday_repeat.data,
-            repeat_monday= False, # form.monday_repeat.data,
-            repeat_tuesday=False, # form.tuesday_repeat.data,
-            repeat_wednesday=False, # form.wednesday_repeat.data,
-            repeat_thursday=False, # form.thursday_repeat.data,
-            repeat_friday=False, # form.friday_repeat.data,
-            repeat_saturday=False # form.saturday_repeat.data,
-        )
-        db.session.add(alarm)
-        db.session.commit()
-        return redirect('/')
-    return render_template('edit_alarm.html', form=form)
+import datetime
 
 
 @app.route('/api/alarms', methods=['GET'])
 def get_alarms():
-    alarms = db.session.query(Alarm).all()
+    alarms = session.query(Alarm).all()
     return {'alarms': AlarmSchema().dump(alarms, many=True)}
 
 
 @app.route('/api/alarms', methods=['POST'])
 def add_alarm():
     json_data = request.get_json()
-    if not json_data:
+    data = json_data['alarm']
+    if not data:
         return {"message": "No input data provided"}, 400
-    try:
-        data = AlarmSchema().load(json_data)
-    except ValidationError as err:
-        return err.messages, 422
     alarm = Alarm(
-        time=data['time'],
+        time=datetime.datetime.strptime(data['time'], '%H:%M').time(),
         label=data['label'],
         enabled=data['enabled'],
         repeat=data['repeat'],
@@ -65,31 +34,26 @@ def add_alarm():
         repeat_friday=data['repeat_friday'],
         repeat_saturday=data['repeat_saturday']
     )
-    db.session.add(alarm)
-    db.session.commit()
+    session.add(alarm)
+    session.commit()
     return {'test': 'test'}
 
 
 @app.route('/api/alarm/<id>', methods=['DELETE'])
 def delete_alarm(id):
-    db.session.query(Alarm).filter_by(id=id).delete()
-    result = db.session.commit()
+    session.query(Alarm).filter_by(id=id).delete()
+    result = session.commit()
     return {'result': result}
 
 
 @app.route('/api/alarm/<id>', methods=['PUT'])
 def update_alarm(id):
-    json_data = request.get_json()
-    if not json_data:
+    data = request.get_json()
+    if not data:
         return {"message": "No input data provided"}, 400
 
-    try:
-        data = AlarmSchema().load(json_data)
-    except ValidationError as err:
-        return err.messages, 422
-
-    alarm = db.session.query(Alarm).filter_by(id=id).first()
-    alarm.time = data['time']
+    alarm = session.query(Alarm).filter_by(id=id).first()
+    alarm.time = datetime.datetime.strptime(data['time'], '%H:%M').time()
     alarm.label = data['label']
     alarm.enabled = data['enabled']
     alarm.repeat = data['repeat']
@@ -101,5 +65,5 @@ def update_alarm(id):
     alarm.repeat_friday = data['repeat_friday']
     alarm.repeat_saturday = data['repeat_saturday']
 
-    result = db.session.commit()
+    result = session.commit()
     return {'result': result}

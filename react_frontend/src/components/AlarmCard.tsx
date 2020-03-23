@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Alarm from '../types/alarm';
 import Switch from '@material-ui/core/Switch';
+import moment from 'moment'
 
 
 export interface AlarmCardProps {
@@ -18,7 +19,7 @@ function AlarmCard({alarm, onClick}: AlarmCardProps) {
 
     return (
         <div onClick={onClick}>
-            {alarm.time}
+            {moment(alarm.time, 'H:mm:ss').format('h:mm a')}
             <Switch
                 checked={alarm.enabled}
                 onChange={handleChange}

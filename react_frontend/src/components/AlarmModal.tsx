@@ -6,6 +6,7 @@ import {TextField, Switch, FormControlLabel, FormGroup, Checkbox, IconButton,} f
 import DeleteIcon from '@material-ui/icons/Delete';
 import {Formik, Form} from "formik";
 import { createAlarm, updateAlarm, deleteAlarm } from '../api/alarm';
+import Moment from 'moment'
 
 export interface AlarmPopupProps {
     alarm: Alarm | null,
@@ -190,7 +191,7 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
                                     Close
                                 </Button>
                                 <Button variant='primary' type='submit'>
-                                    Save Changes
+                                    {alarm ? 'Save Changes' : 'Add Alarm'}
                                 </Button>
                             </Form>
                         )}

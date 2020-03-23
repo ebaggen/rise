@@ -9,6 +9,7 @@ from enum import Enum
 
 
 class HueController:
+
     def __init__(self, duration):
         self._duration = duration
 
@@ -159,6 +160,18 @@ def alarms_to_datetimes(alarms, now):
     return upcoming_alarms
 
 
+def refresh_db():
+    current_date = datetime.now().replace(microsecond=0)
+
+    # Query all alarms
+    alarms = session.query(Alarm).all()
+
+    # Select and sort all alarms within the next 24 hours
+    upcoming_alarms = alarms_to_datetimes(alarms, current_date)
+
+    return upcoming_alarms[0] if len(upcoming_alarms) > 0 else None
+
+
 if __name__ == '__main__':
     sonos = SonosController(10)
     hue = HueController(10)
@@ -166,19 +179,11 @@ if __name__ == '__main__':
     controllers_active = False
     session = Session()
 
+    next_alarm = refresh_db()
+
     while True:
         try:
             current_date = datetime.now().replace(microsecond=0)
-
-            # Query all alarms
-            alarms = session.query(Alarm).all()
-            print(alarms)
-
-            # Select and sort all alarms within the next 24 hours
-            upcoming_alarms = alarms_to_datetimes(alarms, current_date)
-
-            next_alarm = upcoming_alarms[0] if len(upcoming_alarms) > 0 else None
-
             if next_alarm is not None:
 
                 # Seconds remaining until next alarm
