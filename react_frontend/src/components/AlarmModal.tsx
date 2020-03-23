@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Alarm from '../types/alarm';
-import Button from 'react-bootstrap/Button'
-import Modal from 'react-bootstrap/Modal'
-import {TextField, Switch, FormControlLabel, FormGroup, Checkbox} from '@material-ui/core'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import {TextField, Switch, FormControlLabel, FormGroup, Checkbox, IconButton,} from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {Formik, Form} from "formik";
-import { createAlarm, updateAlarm } from '../api/alarm'
+import { createAlarm, updateAlarm, deleteAlarm } from '../api/alarm';
 
 export interface AlarmPopupProps {
     alarm: Alarm | null,
@@ -36,6 +37,13 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
             createAlarm(alarm)
                 .then(() => close())
         }
+    }
+
+    const onDelete = (alarmId: number) => {
+        if (alarmId >= 0) {
+            deleteAlarm(alarmId)
+                .then(() => close())
+        }
 
     }
 
@@ -44,6 +52,11 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
             <Modal show={showModal}>
                 <Modal.Header>
                     <Modal.Title>{alarm ? 'Edit Alarm' : 'New Alarm'}</Modal.Title>
+                    {alarm &&
+                        <IconButton aria-label="delete" onClick={() => onDelete(alarm.id || -1)}>
+                            <DeleteIcon fontSize="large"/>
+                        </IconButton>
+                    }
                 </Modal.Header>
                 <Modal.Body>
 

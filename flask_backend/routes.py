@@ -48,7 +48,6 @@ def add_alarm():
     json_data = request.get_json()
     if not json_data:
         return {"message": "No input data provided"}, 400
-
     try:
         data = AlarmSchema().load(json_data)
     except ValidationError as err:
