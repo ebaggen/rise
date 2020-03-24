@@ -1,10 +1,10 @@
+from typing import Dict, Any
+
 from db.models import Alarm
 from db.schemas import AlarmSchema
-from flask import render_template, redirect, request
+from flask import request
 from flask import current_app as app
 from flask_backend import session
-from time import time
-from marshmallow import ValidationError
 import datetime
 
 
@@ -39,7 +39,7 @@ def add_alarm():
 
 
 @app.route('/api/alarm/<id>', methods=['DELETE'])
-def delete_alarm(id):
+def delete_alarm(id: int) -> Dict[str, Any]:
     session.query(Alarm).filter_by(id=id).delete()
     result = session.commit()
     return {'result': result}

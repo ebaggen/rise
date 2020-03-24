@@ -15,9 +15,6 @@ class HueController(BaseController):
         self.lights = self.bridge.lights
 
     def _loop(self, cancellation_token) -> None:
-        for light in self.lights:
-            light.brightness = 0
-            light.on = False
 
         # Test parameters
         # todo: make this config data

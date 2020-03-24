@@ -2,7 +2,8 @@ from os import environ, path
 
 basedir = path.abspath(path.dirname(__file__))
 
-class Config(object):
+
+class Config:
     """Set Flask configurations vars from .env file."""
 
     # General
@@ -17,3 +18,8 @@ class Config(object):
 
     # Redis
     REDIS_URL = environ.get('REDIS_URL') or 'redis://'
+
+    # Sonos
+    class Sonos:
+
+        IP_ADDRESS = '192.168.0.110'
