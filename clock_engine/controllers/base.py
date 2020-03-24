@@ -1,64 +1,41 @@
-from enum import Enum
 from threading import Thread
-from time import sleep
-from queue import SimpleQueue
+
+'''
+BaseController implements the base threading functionality for Rise controllers, like Hue and Sonos.
+Child classes must call BaseController's constructor and override the _loop() method.
+
+start() and stop() is handled by the BaseController.
+
+Starting the action spins off a new thread. Only one thread is allowed per controller. If a controller is attempting
+to start an already active process, an exception will be thrown. Higher level code should check is_active() before
+trying to use a controller.
+
+Stopping the action is done through a cancellation token. Simply raising the token will end the thread. The cancellation
+token must be implemented by the child class!
+'''
 
 
 class BaseController:
-    class Actions(Enum):
-        Start = 1
-        Stop = 2
-        Terminate = 3
 
-    class Status(Enum):
-        Idle = 1
-        Running = 2
-        Terminated = 3
+    def __init__(self) -> None:
+        self.thread = Thread()
+        self.cancellation_token = False
 
-    def __init__(self, callback):
-        self.event_queue = SimpleQueue()
-
-        self.status = self.Status.Idle
-
-        self.callback = callback
-
-        self.event_thread = Thread(target=self.__daemon)
-        self.event_thread.setDaemon(True)
-        self.event_thread.start()
-
-    def start(self):
-        if self.status == self.status.Terminated:
-            raise Exception('Controller is terminated.')
+    def start(self) -> None:
+        if not self.is_active():
+            self.thread = Thread(target=self._loop, args=(lambda: self.cancellation_token,))
+            self.thread.start()
         else:
-            self.event_queue.put_nowait(self.Actions.Start)
+            raise Exception('Thread already exists.')
 
-    def stop(self):
-        if self.status == self.status.Terminated:
-            raise Exception('Controller is terminated.')
-        else:
-            self.event_queue.put_nowait(self.Actions.Stop)
+    def stop(self) -> None:
+        if self.is_active():
+            self.cancellation_token = True
+            self.thread.join()
+            self.cancellation_token = False
 
-    def terminate(self):
-        self.event_queue.put_nowait(self.Actions.Terminate)
-        self.event_thread.join()
+    def is_active(self) -> bool:
+        return self.thread.is_alive()
 
-    def __daemon(self):
-
-        while self.status != self.Status.Terminated:
-
-            if not self.event_queue.empty():
-                command = self.event_queue.get()
-                if command == self.Actions.Start:
-                    self.status = self.Status.Running
-                elif command == self.Actions.Stop:
-                    self.status = self.Status.Idle
-                elif command == self.Actions.Abort:
-                    self.status = self.Status.Aborted
-                else:
-                    # todo: raise an error that a bad command was received
-                    pass
-
-            if self.status == self.Status.Running:
-                self.callback()
-
-            sleep(1)
+    def _loop(self, cancellation_token) -> None:
+        raise NotImplementedError

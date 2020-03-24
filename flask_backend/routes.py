@@ -1,6 +1,5 @@
 from db.models import Alarm
 from db.schemas import AlarmSchema
-from .forms import AlarmEditForm
 from flask import render_template, redirect, request
 from flask import current_app as app
 from flask_backend import session

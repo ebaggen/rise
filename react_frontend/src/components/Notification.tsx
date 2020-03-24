@@ -51,7 +51,7 @@ export function Notification({message, severity, open, handleClose}: Notificatio
             open={open}
             autoHideDuration={6000}
             onClose={(event?, reason?) => {
-                if (reason != 'clickaway'){
+                if (reason !== 'clickaway'){
                     handleClose();
                 }
             }}

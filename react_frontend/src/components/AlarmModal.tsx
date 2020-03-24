@@ -6,7 +6,10 @@ import {TextField, Switch, FormControlLabel, FormGroup, Checkbox, IconButton,} f
 import DeleteIcon from '@material-ui/icons/Delete';
 import {Formik, Form} from "formik";
 import { createAlarm, updateAlarm, deleteAlarm } from '../api/alarm';
-import Moment from 'moment'
+import moment from 'moment'
+import {KeyboardTimePicker, MuiPickersUtilsProvider} from '@material-ui/pickers';
+import MomentUtils from "@date-io/moment";
+
 
 export interface AlarmPopupProps {
     alarm: Alarm | null,
@@ -66,20 +69,14 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
 
                             <Form>
                                 <div>
-                                    <TextField
-                                        label="time"
-                                        name='alarm.time'
-                                        type='time'
-                                        value={values.alarm.time}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        inputProps={{
-                                            step: 300, // 5 min
-                                        }}
-                                    />
+                                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                                        <KeyboardTimePicker
+                                            label = 'Time'
+                                            name = 'alarm.time'
+                                            value={values.alarm.time}
+                                            onChange={handleChange}
+                                        />
+                                    </MuiPickersUtilsProvider>
                                 </div>
                                 <div>
                                     <TextField
