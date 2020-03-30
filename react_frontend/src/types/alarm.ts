@@ -1,6 +1,8 @@
+import { Moment } from 'moment'
+
 export default interface Alarm {
     id?: number,
-    time: Date,
+    time: Moment,
     label: string,
     enabled: boolean,
     repeat: boolean,

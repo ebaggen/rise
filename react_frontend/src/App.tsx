@@ -8,7 +8,7 @@ import {fetchAlarms} from './api/alarm'
 import Alarm from "./types/alarm";
 import {Notification} from "./components/Notification";
 import {NotificationSeverity} from "./enums/notificationSeverity";
-import Moment from 'react-moment'
+import moment from 'react-moment'
 
 
 function App() {

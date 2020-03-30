@@ -1,26 +1,28 @@
-from .base import BaseController
+from .base import BaseTransition
 from soco import SoCo
 from time import sleep
+from datetime import datetime
 
 
-class SonosController(BaseController):
+class SonosWakeUpTransition(BaseTransition):
 
-    def __init__(self, duration: int, ip_address: str) -> None:
+    def __init__(self, duration: int, sonos: SoCo) -> None:
         super().__init__()
 
         self.duration = duration
 
         # Initialize sonos speaker connection
         # todo: make this config data
-        self.sonos = SoCo(ip_address)
+        self.sonos = sonos
 
-    def _loop(self, cancellation_token) -> None:
+    def _transition(self, cancellation_token: callable(bool)) -> None:
+        print(datetime.now(), 'starting sonos loop')
         # todo: select station/track info to play
         self.sonos.volume = 0
 
         # Test parameters
         # todo: make this config data
-        ending_volume = 40
+        ending_volume = 5
         step_time = 1
         elapsed_time = 0
 

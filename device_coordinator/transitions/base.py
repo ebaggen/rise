@@ -1,23 +1,24 @@
 from threading import Thread
 
 '''
-BaseController implements the base threading functionality for Rise controllers, like Hue and Sonos.
-Child classes must call BaseController's constructor and override the _loop() method.
+BaseTransition implements the base threading functionality for Rise transitions, like Hue and Sonos.
+Child classes must call BaseTransition's constructor and override the _loop() method.
 
 start() and stop() is handled by the BaseController.
 
-Starting the action spins off a new thread. Only one thread is allowed per controller. If a controller is attempting
+Starting the action spins off a new thread. Only one thread is allowed per drivers. If a drivers is attempting
 to start an already active process, an exception will be thrown. Higher level code should check is_active() before
-trying to use a controller.
+trying to use a drivers.
 
 Stopping the action is done through a cancellation token. Simply raising the token will end the thread. The cancellation
 token must be implemented by the child class!
 '''
 
 
-class BaseController:
+class BaseTransition:
 
-    def __init__(self) -> None:
+    def __init__(self, duration: int) -> None:
+        self.duration = duration
         self.thread = Thread()
         self.cancellation_token = False
 

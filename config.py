@@ -22,4 +22,7 @@ class Config:
     # Sonos
     class Sonos:
 
-        IP_ADDRESS = '192.168.0.110'
+        IP_ADDRESS = '192.168.0.109'
+
+    class Hue:
+        IP_ADDRESS = '192.168.0.59'

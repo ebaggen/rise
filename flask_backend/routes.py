@@ -1,19 +1,20 @@
 from typing import Dict, Any
-
-from db.models import Alarm
-from db.schemas import AlarmSchema
+from flask_backend.scheduler import schedule_alarm
+from flask_backend.models import db, Alarm
+from flask_backend.schemas import alarms_schema
 from flask import request
 from flask import current_app as app
-from flask_backend import session
 import datetime
 
 
+# Get all alarms
 @app.route('/api/alarms', methods=['GET'])
 def get_alarms():
-    alarms = session.query(Alarm).all()
-    return {'alarms': AlarmSchema().dump(alarms, many=True)}
+    alarms = db.session.query(Alarm).all()
+    return {'alarms': alarms_schema.dump(alarms)}
 
 
+# Add a new alarm (no id)
 @app.route('/api/alarms', methods=['POST'])
 def add_alarm():
     json_data = request.get_json()
@@ -21,7 +22,7 @@ def add_alarm():
     if not data:
         return {"message": "No input data provided"}, 400
     alarm = Alarm(
-        time=datetime.datetime.strptime(data['time'], '%H:%M').time(),
+        time=datetime.datetime.strptime(data['time'], '%H:%M:%S').time(),
         label=data['label'],
         enabled=data['enabled'],
         repeat=data['repeat'],
@@ -33,26 +34,34 @@ def add_alarm():
         repeat_friday=data['repeat_friday'],
         repeat_saturday=data['repeat_saturday']
     )
-    session.add(alarm)
-    session.commit()
+    db.session.add(alarm)
+    db.session.commit()
+
+    schedule_alarm()
+
     return {'test': 'test'}
 
 
+# Delete alarm
 @app.route('/api/alarm/<id>', methods=['DELETE'])
 def delete_alarm(id: int) -> Dict[str, Any]:
-    session.query(Alarm).filter_by(id=id).delete()
-    result = session.commit()
+    db.session.query(Alarm).filter_by(id=id).delete()
+    result = db.session.commit()
+
+    schedule_alarm()
+
     return {'result': result}
 
 
+# Update alarm with <id>
 @app.route('/api/alarm/<id>', methods=['PUT'])
 def update_alarm(id):
     data = request.get_json()
     if not data:
         return {"message": "No input data provided"}, 400
-
-    alarm = session.query(Alarm).filter_by(id=id).first()
-    alarm.time = datetime.datetime.strptime(data['time'], '%H:%M').time()
+    print(data)
+    alarm = db.session.query(Alarm).filter_by(id=id).first_or_404()
+    alarm.time = datetime.datetime.strptime(data['time'], '%H:%M:%S').time()
     alarm.label = data['label']
     alarm.enabled = data['enabled']
     alarm.repeat = data['repeat']
@@ -64,5 +73,8 @@ def update_alarm(id):
     alarm.repeat_friday = data['repeat_friday']
     alarm.repeat_saturday = data['repeat_saturday']
 
-    result = session.commit()
+    result = db.session.commit()
+
+    schedule_alarm()
+
     return {'result': result}

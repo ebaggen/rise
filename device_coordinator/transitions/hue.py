@@ -1,21 +1,19 @@
-from .base import BaseController
+from .base import BaseTransition
 from phue import Bridge
 from time import sleep
+from datetime import datetime
 
 
-class HueController(BaseController):
+class HueWakeUpTransition(BaseTransition):
 
-    def __init__(self, duration: int, ip_address: str) -> None:
+    def __init__(self, duration: int, lights: Bridge.lights) -> None:
         super().__init__()
 
         self.duration = duration
-
-        # Initialize Hue connection
-        self.bridge = Bridge(ip_address)
-        self.lights = self.bridge.lights
+        self.lights = lights
 
     def _loop(self, cancellation_token) -> None:
-
+        print(datetime.now(), 'starting hue loop')
         # Test parameters
         # todo: make this config data
         ending_brightness = 100

@@ -1,3 +1,5 @@
+requests
+paho-mqtt
 marshmallow
 soco
 phue
