@@ -8,13 +8,13 @@ import {fetchAlarms} from './api/alarm'
 import Alarm from "./types/alarm";
 import {Notification} from "./components/Notification";
 import {NotificationSeverity} from "./enums/notificationSeverity";
-import moment from 'react-moment'
+import moment from 'moment'
 
 
 function App() {
 
-    const [alarms, setAlarms] = useState([]);
-    const [showModal, setShowModal] = useState({
+    const [alarms, setAlarms] = useState<Alarm[]>([]);
+    const [showModal, setShowModal] = useState<{ alarm: Alarm | null, show: boolean }>({
         alarm: null,
         show: false
     });
@@ -31,8 +31,9 @@ function App() {
 
     const refreshState = () => {
         fetchAlarms()
-            .then(alarms => {
-                alarms.sort((a: Alarm, b: Alarm) => a.time < b.time ? -1 : 1);
+            .then((alarms) => {
+                console.log(alarms)
+                alarms.sort((a: Alarm, b: Alarm) => a.time.isBefore( b.time) ? -1 : 1)
                 setAlarms(alarms);
             });
     }
@@ -40,6 +41,7 @@ function App() {
     return (
         <div className="App">
             <body className="App-body">
+
                 <Notification
                     message={notification.message}
                     severity={notification.severity}
@@ -57,9 +59,9 @@ function App() {
                         refreshState();
                     }}
                 />
-                <p>
-                    {alarms.map(alarm =>
-                        <div>
+                <div>
+                    {alarms.map((alarm) =>
+                        <div key={alarm.id}>
                             <AlarmCard alarm={alarm} onClick={() => {
                                 setShowModal({
                                     alarm: alarm,
@@ -70,8 +72,8 @@ function App() {
                         </div>
                         )
                     }
-                </p>
-                <Fab color="primary" aria-label="add" onClick={() => setShowModal({
+                </div>
+            <Fab color="primary" aria-label="add" onClick={() => setShowModal({
                     alarm: null,
                     show: true
                 })}>

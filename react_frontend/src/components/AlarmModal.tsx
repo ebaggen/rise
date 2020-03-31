@@ -6,22 +6,20 @@ import {TextField, Switch, FormControlLabel, FormGroup, Checkbox, IconButton,} f
 import DeleteIcon from '@material-ui/icons/Delete';
 import {Formik, Form} from "formik";
 import { createAlarm, updateAlarm, deleteAlarm } from '../api/alarm';
-import {MuiPickersUtilsProvider} from '@material-ui/pickers';
-import MomentUtils from "@date-io/moment";
-import TimePickerToolbar from "@material-ui/pickers/TimePicker/TimePickerToolbar";
-import TimePicker from "@material-ui/pickers/TimePicker/TimePicker"
 import moment from 'moment'
+import { TimePicker, MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 
-export interface AlarmPopupProps {
+export interface AlarmModalProps {
     alarm: Alarm | null,
     showModal: boolean,
     close: () => void
 }
 
-function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
+function AlarmModal({alarm, showModal, close}: AlarmModalProps) {
     const initialAlarm = alarm ? alarm : {
-        time: new Date(),
+        time: moment(),
         label: '',
         enabled: true,
         repeat: false,
@@ -33,7 +31,6 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
         repeat_friday: false,
         repeat_saturday: false
     };
-
 
     const onSubmit = (alarm: Alarm) => {
         if (alarm.id) {
@@ -65,20 +62,17 @@ function AlarmModal({alarm, showModal, close}: AlarmPopupProps) {
                     }
                 </Modal.Header>
                 <Modal.Body>
-
                     <Formik initialValues={{alarm: initialAlarm}} onSubmit={(values) => onSubmit(values.alarm)}>
                         {({values, handleChange, handleBlur}) => (
-
                             <Form>
                                 <div>
-                                    <TextField
-                                        label="Time"
-                                        name='alarm.time'
-                                        type='time'
-                                        value={values.alarm.time}
-                                        onChange={handleChange}
-                                        onBlur={handleBlur}
-                                    />
+                                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                                        <KeyboardTimePicker
+                                            label="Time"
+                                            name='alarm.time'
+                                            value={values.alarm.time}
+                                            onChange={(time, value) => handleChange(value)}/>
+                                    </MuiPickersUtilsProvider>
                                 </div>
                                 <div>
                                     <TextField

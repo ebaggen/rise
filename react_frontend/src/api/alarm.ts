@@ -1,16 +1,17 @@
 import Alarm from '../types/alarm';
 import moment from 'moment';
-import alarm from "../types/alarm";
 
-export function fetchAlarms() {
+export function fetchAlarms(): Promise<Alarm[]> {
     return fetch('/api/alarms')
-            .then(res => res.json())
+            .then(res => {
+                return res.json();
+            })
             .then(data => {
                 return data.alarms.map((alarm: Alarm) => ({
                     ...alarm,
-                    time: moment.utc(alarm.time, 'H:mm:ss').local().format('H:mm')
-                }));
-        });
+                    time: moment.utc(alarm.time, 'H:mm').local()
+                })) as Promise<Alarm[]>
+            })
 }
 
 export function createAlarm(alarm: Alarm) {
