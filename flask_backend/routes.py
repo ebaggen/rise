@@ -17,10 +17,10 @@ def get_alarms():
 # Add a new alarm (no id)
 @app.route('/api/alarms', methods=['POST'])
 def add_alarm():
-    json_data = request.get_json()
-    data = json_data['alarm']
+    data = request.get_json()
     if not data:
         return {"message": "No input data provided"}, 400
+
     alarm = Alarm(
         time=datetime.datetime.strptime(data['time'], '%H:%M:%S').time(),
         label=data['label'],
@@ -59,7 +59,6 @@ def update_alarm(id):
     data = request.get_json()
     if not data:
         return {"message": "No input data provided"}, 400
-    print(data)
     alarm = db.session.query(Alarm).filter_by(id=id).first_or_404()
     alarm.time = datetime.datetime.strptime(data['time'], '%H:%M:%S').time()
     alarm.label = data['label']
