@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import AlarmCard from './components/AlarmCard';
-import AlarmModal from './components/AlarmModal';
+import AlarmForm from './components/AlarmForm';
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add';
 import {fetchAlarms} from './api/alarm'
@@ -48,10 +48,10 @@ function App() {
                     open={notification.open}
                     handleClose={() => setNotification({...notification, open: false})}
                 />
-                <AlarmModal
+                <AlarmForm
                     alarm={showModal.alarm}
-                    showModal={showModal.show}
-                    close={() => {
+                    show={showModal.show}
+                    onClose={() => {
                         setShowModal({
                             alarm: null,
                             show: false

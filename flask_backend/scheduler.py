@@ -22,7 +22,7 @@ scheduler = Scheduler(connection=Redis(), interval=1)
 def notify_alarm():
     print('notify alarm')
     client.connect('localhost')
-    client.publish('rise/alarm/wake-up')
+    client.publish('rise', 'alarm/wake-up')
     client.disconnect()
 
     # Schedule next alarm
@@ -33,7 +33,7 @@ def notify_alarm():
 def notify_alarm_warning():
     print('notify warning')
     client.connect('localhost')
-    client.publish('rise/alarm/30-min-warning')
+    client.publish('rise', '/alarm/30-min-warning')
     client.disconnect()
 
 

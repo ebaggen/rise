@@ -1,6 +1,6 @@
-from device_coordinator.drivers.hue import HueDriver
-from device_coordinator.drivers.sonos import SonosDriver
-from device_coordinator.drivers.ifttt import IFTTTDriver
+from hub.device_engines.hue import HueDriver
+from hub.device_engines.sonos import SonosDriver
+from hub.device_engines.ifttt import IFTTTDriver
 import time
 
 hue = HueDriver(60, '192.168.0.59')
