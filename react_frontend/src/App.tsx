@@ -8,7 +8,6 @@ import {fetchAlarms} from './api/alarm'
 import Alarm from "./types/alarm";
 import {Notification} from "./components/Notification";
 import {NotificationSeverity} from "./enums/notificationSeverity";
-import moment from 'moment'
 
 
 function App() {
@@ -40,6 +39,9 @@ function App() {
 
     return (
         <div className="App">
+            <header className="App-header">
+                <h1>RISE</h1>
+            </header>
             <body className="App-body">
 
                 <Notification
@@ -68,18 +70,19 @@ function App() {
                                     show: true
                                 });
                             }}/>
-                            <hr/>
                         </div>
                         )
                     }
                 </div>
-            <Fab color="primary" aria-label="add" onClick={() => setShowModal({
+            </body>
+            <footer className="App-footer">
+                <Fab className="app-fab--absolute" aria-label="add" onClick={() => setShowModal({
                     alarm: null,
                     show: true
                 })}>
                     <AddIcon/>
                 </Fab>
-            </body>
+            </footer>
         </div>
   );
 }

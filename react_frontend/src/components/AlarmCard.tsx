@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Alarm from '../types/alarm';
-import Switch from '@material-ui/core/Switch';
+import {Switch} from 'antd';
+import '../App.css'
 
 
 export interface AlarmCardProps {
@@ -14,13 +15,14 @@ function AlarmCard({alarm, onClick}: AlarmCardProps) {
     }
 
     return (
-        <div onClick={onClick}>
-            {alarm.time.format('h:mm A')}
-            <Switch
-                checked={alarm.enabled}
-                onChange={handleChange}
-            />
-            <br/>
+        <div onClick={onClick} className="Alarm-card">
+            <div className="Alarm-card-top">
+                {alarm.time.format('h:mm A')}
+                <Switch
+                    checked={alarm.enabled}
+                    onChange={handleChange}
+                />
+            </div>
             {alarm.label}
         </div>
     );

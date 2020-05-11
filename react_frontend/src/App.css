@@ -10,27 +10,61 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  background-color: rgb(61,144,247);
+  min-height: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
+  font-family: "Avenir Next", Helvetica, Arial, sans-serif;
   color: white;
+  letter-spacing: 1em;
+  position: sticky;
+  top: 0;
 }
 
 .App-body {
-  background-color: #282c34;
+  background-color: #EEEFEE;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-family: "Avenir Next", Helvetica, Arial, sans-serif;
+}
+
+.App-footer {
+  position: sticky;
+  bottom: 0;
+  text-align: right;
 }
 
 .App-link {
   color: #61dafb;
+}
+
+.Alarm-card {
+  background-color: white;
+  color: #505050;
+  box-shadow: 5px 5px 10px #909090;
+  min-width: 20em;
+  padding: 1em;
+  margin-top: 50px;
+}
+
+.Alarm-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.app-fab--absolute {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #61dafb;
 }
