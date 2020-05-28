@@ -61,23 +61,10 @@ class Alarm(db.Model):
                 return datetime(year=now.year, month=now.month, day=now.day, hour=self.time.hour,
                                 minute=self.time.minute) + timedelta(days_ahead)
 
-            alarm_datetimes = []
-
-            if self.repeat_sunday:
-                alarm_datetimes.append(_next_weekday(6))
-            if self.repeat_monday:
-                alarm_datetimes.append(_next_weekday(0))
-            if self.repeat_tuesday:
-                alarm_datetimes.append(_next_weekday(1))
-            if self.repeat_wednesday:
-                alarm_datetimes.append(_next_weekday(2))
-            if self.repeat_thursday:
-                alarm_datetimes.append(_next_weekday(3))
-            if self.repeat_friday:
-                alarm_datetimes.append(_next_weekday(4))
-            if self.repeat_saturday:
-                alarm_datetimes.append(_next_weekday(5))
+            schedule = [
+                self.repeat_sunday, self.repeat_monday, self.repeat_tuesday,
+                self.repeat_wednesday, self.repeat_thursday, self.repeat_friday, self.repeat_saturday
+            ]
 
             # Return the first datetime as the alarm time
-            return min(alarm_datetimes)
-
+            return min([_next_weekday(day) for day, repeat in enumerate(schedule) if repeat])
